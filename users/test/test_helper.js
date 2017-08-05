@@ -23,6 +23,7 @@ before((done) => {
 });
 
 beforeEach((done) => {
+	// create new collections in MongoDB using Mongoose
 	const { users, comments, blogposts } = mongoose.connection.collections;
 	users.drop(() => {
 		comments.drop(() => {
