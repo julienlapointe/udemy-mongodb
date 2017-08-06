@@ -20,6 +20,9 @@ const UserSchema = new Schema({
 // param #1: name of collection
 // param #2: UserSchema defining the structure / type of data to be stored 
 const User = mongoose.model("user", UserSchema);
+// note: every Mongoose method that interacts with the database returns a Promise that is either:
+	// - "resolved" if the operation (ex. dropping all documents) was successful 
+	// - "rejected" if the operation failed
 
 // step 5: export the collection
 // make the User "collection" / "class" / "model" available to other files

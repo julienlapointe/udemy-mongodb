@@ -28,6 +28,10 @@ describe("Creating records", () => {
 		// .save() returns a Promise
 			// resolve() = object "joe" was successfully added / saved to MongoDB
 			// reject() = object "joe" was *not* successfully added / saved to MongoDB
+		// note: every Mongoose method that interacts with the database returns a Promise that is either:
+			// - "resolved" if the operation (ex. dropping all documents) was successful 
+			// - "rejected" if the operation failed
+		// .save() is equivalent to INSERT in SQL
 		joe.save()
 			// .then() is invoked when the Promise "resolves"
 			.then(() => {
@@ -37,6 +41,8 @@ describe("Creating records", () => {
 					// .isNew === false when object has been successfully saved to MongoDB
 				// assert(!joe.isNew); asks Mocha to test: has "joe" been successfully saved to MongoDB?
 				assert(!joe.isNew);
+				// tell Mocha that this individual test (it()) is complete
+				// Mocha can proceed to the next test
 				done();
 			});
 		
