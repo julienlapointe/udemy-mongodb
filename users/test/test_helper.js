@@ -39,9 +39,22 @@ beforeEach((done) => {
 	// database operations are not instantaneous (they are *fast*, but still take some time), therefore these operations are done asynchronously
 	// "out-of-the-box" Mocha has no understanding of "asynchronous" / waiting for other tasks (ex. dropping the database) to complete - Mocha just wants to run all its tests as fast as possible
 	// Mocha's done() callback function is invoked when the database operation (.drop() in this case) is *done* - this tells Mocha that it can proceed running its tests
-	mongoose.connection.collections.users.drop(() => {
+	// mongoose.connection.collections.users.drop(() => {
 		// place anonymous function inside .drop() - this is a callback function that gets invoked when the .drop() operation is complete
 		// use Mocha's done() callback function to tell Mocha that we are done this operation (an operation that is necessary for testing) and Mocha can now proceed running its tests 
-		done();
+		// done();
+	// });
+	// commented out dropping all documents in the Users collection 
+	// used ES6 destructuring to efficiently drop all documents from all collections (Users, BlogPosts, and Comments) below
+	// note: cannot .drop() multiple collections simultaneously in MongoDB... must use callback functions to sequentially / serially .drop() each collection one-at-a-time
+	// NOTE: Mongoose casts all collection names to be lowercase so "blogPosts" is now "blogposts"
+	const {users, comments, blogposts} = mongoose.connection.collections;
+	users.drop(() => {
+		comments.drop(() => {
+			blogposts.drop(() => {
+				done();
+			});
+		});
 	});
+
 });

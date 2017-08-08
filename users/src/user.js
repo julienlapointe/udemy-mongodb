@@ -33,8 +33,16 @@ const UserSchema = new Schema({
 	// postCount: Number,
 	// tell User document that it should contain a subdocument called "Post" that follows the Post Schema
 	// use an array [] to tell MongoDB that we expect to have many documents / items associated with this type / property / field
+	// note the "posts" subdocument was kept for future reference (use it as a template), but the schema design was refactored to create a separate collection called "BlogPost"
 	posts: [PostSchema],
-	likes: Number
+	likes: Number,
+	// use an array [] to tell MongoDB that we expect to have many documents / items associated with this type / property / field (each "user" can be the author of many "blogPosts")
+	blogPosts: [{
+		// states that this array will be populated with ObjectIds from a Schema (the BlogPostSchema)
+		type: Schema.Types.ObjectId,
+		// references the "BlogPost" collection
+		ref: "BlogPost"
+	}] 
 });
 
 // step 3.5: add "virtual type / property" for postCount
@@ -48,10 +56,10 @@ UserSchema.virtual('postCount').get(function() {
 
 // step 4: create the collection
 // create the User "collection" / "class" / "model"
-// tell Mongoose to create a MongoDB collection (= "table") called "user"
-// param #1: name of collection
+// tell Mongoose to create a MongoDB collection (= "table") called "User"
+// param #1: name of collection (used by other Schemas to reference this collection)
 // param #2: UserSchema defining the structure / type of data to be stored 
-const User = mongoose.model("user", UserSchema);
+const User = mongoose.model("User", UserSchema);
 // note: every Mongoose method that interacts with the database returns a Promise that is either:
 	// - "resolved" if the operation (ex. dropping all documents) was successful 
 	// - "rejected" if the operation failed
