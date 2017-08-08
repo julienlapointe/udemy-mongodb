@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "nodemon --exec 'mocha -R min || true'"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "mocha": "^3.1.2",
-    "mongoose": "^4.10.8",
+    "mongoose": "^4.11.5"
+  },
+  "devDependencies": {
+    "mocha": "^3.5.0",
     "nodemon": "^1.11.0"
   }
 }

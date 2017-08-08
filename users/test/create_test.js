@@ -1,10 +1,10 @@
+// this file tests whether we can create a new user object and save it to the User collection in our MongoDB database
+// note: all test filenames end in "_test.js"
+
 // add the NodeJS "assert" module to build assertions for unit testing
 const assert = require("assert");
 // add the User "collection" / "class" / "model" to be tested
 const User = require("../src/user.js");
-
-// this file tests whether we can create a new user object and save it to the User collection in our MongoDB database
-// note: all test filenames end in "_test.js"
 
 // Mocha's describe() function
 // param #1: string describing the "test suite"
@@ -28,24 +28,24 @@ describe("Creating records", () => {
 		// .save() returns a Promise
 			// resolve() = object "joe" was successfully added / saved to MongoDB
 			// reject() = object "joe" was *not* successfully added / saved to MongoDB
+		// Promises allow your code to run sequentially / in a series / procedurally (similar to callback functions, but cleaner syntax with .then())
 		// note: every Mongoose method that interacts with the database returns a Promise that is either:
 			// - "resolved" if the operation (ex. dropping all documents) was successful 
 			// - "rejected" if the operation failed
 		// .save() is equivalent to INSERT in SQL
 		joe.save()
-			// .then() is invoked when the Promise "resolves"
-			.then(() => {
-				// step 3: test that new user was successfully added to MongoDB
-				// Mongoose adds .isNew property to each object
-					// .isNew === true when object has *not* yet been saved to MongoDB
-					// .isNew === false when object has been successfully saved to MongoDB
-				// assert(!joe.isNew); asks Mocha to test: has "joe" been successfully saved to MongoDB?
-				assert(!joe.isNew);
-				// tell Mocha that this individual test (it()) is complete
-				// Mocha can proceed to the next test
-				done();
-			});
-		
-
+		// .then() is invoked when the Promise "resolves"
+		.then(() => {
+			// step 3: test that new user was successfully added to MongoDB
+			// Mongoose adds .isNew property to each object
+				// .isNew === true when object has *not* yet been saved to MongoDB
+				// .isNew === false when object has been successfully saved to MongoDB
+			// assert(!joe.isNew); asks Mocha to test: has "joe" been successfully saved to MongoDB?
+			assert(!joe.isNew);
+			// tell Mocha that this individual test (it()) is complete
+			// Mocha can proceed to the next test
+			done();
+		});
 	});
+
 });

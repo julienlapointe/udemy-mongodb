@@ -20,8 +20,8 @@ describe("Reading users from database", () => {
 		joe = new User({name: "Joe"});
 		// insert the new user into the database
 		joe.save()
-			// when this operation is complete (resolve() = .then()), call Mocha's done() callback to tell it to proceed to the next test
-			.then(() => done());
+		// when this operation is complete (resolve() = .then()), call Mocha's done() callback to tell it to proceed to the next test
+		.then(() => done());
 	});
 	// Mocha's it() function
 	// param #1: string describing this "individual test"
@@ -36,23 +36,33 @@ describe("Reading users from database", () => {
 			// resolve() = object(s) with criteria "joe" was / were successfully found in MongoDB
 			// reject() = object(s) with criteria "joe" was / were *not* found in MongoDB
 		// note: every Mongoose method that interacts with the database returns a Promise that is either:
-			// - "resolved" if the operation (ex. dropping all documents) was successful 
+			// - "resolved" if the operation (ex. finding / reading the user) was successful 
 			// - "rejected" if the operation failed
 		// .find() is equivalent to SELECT in SQL
 		User.find({ name: "Joe" })
-			// .then() is invoked when the Promise "resolves"
-			// param: "users" represents all the users that were *found* (matched the search criteria) in the database
-			.then((users) => {
-				// we expect 1 user to be found with the name "Joe"
-				// console.log(users);
-				console.log(users[0]._id);
-				console.log(joe._id);
-				// test if the first user returned in the "users" array has the same ID as the ID assigned to the variable "joe" created using the .save() in the beforeEach() function
-				// IMPORTANT: MongoDB saves IDs in this format: ObjectId("12345667890")... must use .toString() method for === to pass / be true
-				assert(users[0]._id.toString() === joe._id.toString());
-				// tell Mocha that this individual test (it()) is complete
-				// Mocha can proceed to the next test
-				done();
-			});
+		// .then() is invoked when the Promise "resolves"
+		// param: "users" represents all the users that were *found* (matched the search criteria) in the database
+		.then((users) => {
+			// we expect 1 user to be found with the name "Joe"
+			// console.log(users);
+			// console.log(users[0]._id);
+			// console.log(joe._id);
+			// test if the first user returned in the "users" array has the same ID as the ID assigned to the variable "joe" created using the .save() in the beforeEach() function
+			// IMPORTANT: MongoDB saves IDs in this format: ObjectId("12345667890")... must use .toString() method for === to pass / be true
+			assert(users[0]._id.toString() === joe._id.toString());
+			// tell Mocha that this individual test (it()) is complete
+			// Mocha can proceed to the next test
+			done();
+		});
+	});
+
+	it("Find a user with a particular ID", (done) => {
+		// ".toString() not needed here because this is not a comparison"...
+		User.findOne({ _id: joe._id })
+		// a single record / user is returned
+		.then((user) => {
+			assert(user.name === "Joe");
+			done();
+		});
 	});
 });
