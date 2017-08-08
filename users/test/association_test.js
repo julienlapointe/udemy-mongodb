@@ -1,9 +1,9 @@
 // add the NodeJS "assert" module to build assertions for unit testing
 const assert = require("assert");
-// add the User, Comment, and BlogPost "collections" / "classes" / "models" to be tested
+// add the User, BlogPost and Comment "collections" / "classes" / "models" to be tested
 const User = require("../src/user.js");
-const Comment = require("../src/comment.js");
 const BlogPost = require("../src/blogPost.js");
+const Comment = require("../src/comment.js");
 
 // test suite for Post subdocuments
 describe("Collection associations", () => {
@@ -65,7 +65,7 @@ describe("Collection associations", () => {
 		});
 	});
 
-	it.only("Accesses a full association / relation graph", (done) => {
+	it("Accesses a full association / relation graph", (done) => {
 		User.findOne({name: "Joe"})
 		// .populate() is a query "modifer" that returns documents associated to the document "Joe" as *referenced* in the UserSchema ("Joe" is a document in the "User" collection) 
 		// .populate() can accept an object with the "path" key representing the field / property / type that references an associated documents (usually by their ID)

@@ -8,7 +8,7 @@ const User = require("../src/user.js");
 // param #2: function containing the "individual tests"
 describe("Reading users from database", () => {
 	// declare object "joe" up here so that we can access the variable in beforeEach() and it() functions below
-	let joe;
+	let joe, maria, alex, zach;
 	// add a Mocha "hook"
 	// the beforeEach() "hook" runs before each test suite (describe() block) 
 	// populate the MongoDB database with user(s) named "Joe" for testing purposes
@@ -18,8 +18,12 @@ describe("Reading users from database", () => {
 		// did not declare the object "joe" with "let" because that would tie its scope to this beforeEach() function (we may want to reference "joe" below in the individual test it())
 		// note: Mongoose automatically assigns the variable "joe" an ID at this point (before it is even saved to MongoDB! MongoDB will use the same ID) and this ID is stored in the joe._id property
 		joe = new User({name: "Joe"});
+		maria = new User({name: "Maria"});
+		alex = new User({name: "Alex"});
+		zach = new User({name: "Zach"});
 		// insert the new user into the database
-		joe.save()
+		// joe.save()
+		Promise.all([joe.save(), maria.save(), alex.save(),  zach.save()])
 		// when this operation is complete (resolve() = .then()), call Mocha's done() callback to tell it to proceed to the next test
 		.then(() => done());
 	});
@@ -62,6 +66,28 @@ describe("Reading users from database", () => {
 		// a single record / user is returned
 		.then((user) => {
 			assert(user.name === "Joe");
+			done();
+		});
+	});
+
+	// pagination test using the $skip and $limit "query modifiers" to filter the result set
+	it("Skips and limits the result set for pagination", (done) => {
+		// ".toString() not needed here because this is not a comparison"...
+		// Joe (skipped), Maria (returned), Alex (returned + end of limit), Zach
+		// note: without .sort(), the test users must be saved in the exact same order listed in the comment above for this test to pass
+		User.find({})
+		// sort users by the "name" property in ascending / alphabetical order (represented by the "1"... "-1" = descending / rever-alphabetical order)
+		.sort({name: 1})
+		.skip(1)
+		.limit(2)
+		// a single record / user is returned
+		.then((users) => {
+			assert(users.length === 2);
+			// assert(users[0].name === "Maria");
+			// assert(users[1].name === "Alex");
+			// after adding the .sort() above, must add the expected names to be returned in ascending order (alphabetically)
+			assert(users[0].name === "Joe");
+			assert(users[1].name === "Maria");
 			done();
 		});
 	});

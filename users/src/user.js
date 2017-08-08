@@ -51,7 +51,25 @@ const UserSchema = new Schema({
 UserSchema.virtual('postCount').get(function() {
 	// from "users" directory (root), run "node" to enter the NodeJS shell, then run the commands: (1) const User = require("./src/user"); (2) joe = new User({}); (3) joe.postCount
 	// "this" returns the instance of User that we are currently working on with all the properties / fields defined in UserSchema above
+	// "this" === the current "user" object (ex. "joe")
 	return this.posts.length;
+});
+
+// step 3.75: add "pre" / post" hooks to run functions before / after specific events: 
+	// .init()
+	// .validate() 
+	// .save()
+	// .remove()
+// note: must use anonymous function() {} syntax in order for "this" (used below) to reference the current instance of User (using fat arrow () => {} syntax, "this" would reference this file's global scope) 
+UserSchema.pre("remove", function(next) {
+	// access the BlogPost Mongoose model
+	const BlogPost = mongoose.model("BlogPost");
+	// "this" = the current "user" object (ex. "joe")
+	// "this.blogPosts" = an array of IDs of all blog posts created by "this" user ("joe" in our Mocha tests)
+	// search the "BlogPost" collection and remove all documents (blog posts) that have "this" user's _id *in* it 
+	BlogPost.remove({_id: {$in: this.blogPosts}})
+	// once all the user's blog posts have been removed, then call next to let Mongoose know it can go ahead and "remove" the user now (UserSchema.pre("remove",...)
+	.then(() => next());
 });
 
 // step 4: create the collection
